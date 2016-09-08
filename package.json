@@ -1,0 +1,32 @@
+{
+  "name": "myangular",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "browserify": "^13.1.0",
+    "jasmine-core": "^2.5.1",
+    "jshint": "^2.9.3",
+    "karma": "^1.2.0",
+    "karma-browserify": "^5.1.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-jshint-preprocessor": "0.0.6",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "phantomjs-prebuilt": "^2.1.12",
+    "sinon": "^1.17.5",
+    "watchify": "^3.7.0"
+  },
+  "scripts": {
+    "lint": "jshint src",
+    "test": "karma start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jquery": "^3.1.0",
+    "lodash": "^4.15.0"
+  }
+}
