@@ -9,3 +9,6 @@ Outline the features covered in each chapter
 * The difference between reference-based and value-based comparison.
 * Exception handling in the Angular digest.
 * Destroying watches so they won’t get executed again.
+
+## Chapter 2 - Scope Methods
+

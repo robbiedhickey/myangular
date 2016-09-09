@@ -89,4 +89,9 @@ Scope.prototype.$$areEqual = function (newValue, oldValue, valueEq) {
 
   return newValue === oldValue;
 };
+
+Scope.prototype.$eval = function(expr, locals) {
+  return expr(this, locals);
+};
+
 module.exports = Scope;
