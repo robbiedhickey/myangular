@@ -26,3 +26,5 @@ Relies heavily on Javascript prototypal inheritance with a few added bells and w
 
 * Root Scope - this is effectively what we have been working with to date. A root scope has no parent. 
 * $new - used to make child scopes. A child scope by default shares the properties of its parent's scope. 'inheritance' describe block has a good set of tests describing the behavior we should expect from a child scope. 
+* attribute shadowing - A consequence of prototypal inheritance is that attributes on the child can 'hide' attributes on the parent. This is referred to as attribute shadowing. This can be confusing when a child wants to modify a parent's member. The workaround for this is, on the parent, to wrap the attribute in an object. Then the child can set the property on the parent.
+* Separated watches - with current implementation, all watchers are stored on root scope. This means, any time we want to trigger a digest we have to trigger all watchers in the scope hierarchy. 

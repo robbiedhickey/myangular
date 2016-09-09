@@ -235,7 +235,9 @@ Scope.prototype.$watchGroup = function (watchFns, listenerFn) {
 };
 
 Scope.prototype.$new = function(){
-  return Object.create(this);
+  var child = Object.create(this);
+  child.$$watchers = [];
+  return child;
 };
 
 module.exports = Scope;
