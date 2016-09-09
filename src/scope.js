@@ -23,6 +23,9 @@ Scope.prototype.$watch = function (watchFn, listenerFn, valueEq) {
     var index = self.$$watchers.indexOf(watcher);
     if(index >= 0){
       self.$$watchers.splice(index, 1);
+      // modifying the underlying array may cause the digest cycle to skip a watcher
+      // disable our lastDirtyWatch optimization in this case.
+      self.$$lastDirtyWatch = null;
     }
   };
 };
