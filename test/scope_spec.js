@@ -550,7 +550,7 @@ describe('Scope', function () {
           scope.counter++;
         }
       );
-      
+
       scope.$digest();
       expect(scope.counter).toBe(1);
 
@@ -582,6 +582,31 @@ describe('Scope', function () {
         expect(scope.asyncApplied).toBe(true);
         done();
       }, 50);
+    });
+
+    it('coalesces many calls to $applyAsync', function(done){
+      scope.counter = 0;
+
+      scope.$watch(
+        function(scope){
+          scope.counter++;
+          return scope.aValue;
+        },
+        function(newValue, oldValue, scope) { }
+      );
+
+      scope.$applyAsync(function(scope){
+        scope.aValue = 'abc';
+      });
+      scope.$applyAsync(function(scope){
+        scope.aValue = 'def';
+      });
+
+      setTimeout(function(){
+        expect(scope.counter).toBe(2);
+        done();
+      }, 50);
+
     });
   })
 });
