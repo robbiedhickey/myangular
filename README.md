@@ -31,3 +31,4 @@ Relies heavily on Javascript prototypal inheritance with a few added bells and w
 * Recursive Digest - we don't want watches to run **up** the hierarchy but we do want them to run **down** the hierarchy. Therefor, scopes need to know what children they have. We will implement this using a $$children array, while angular implements this as a linked list ($$nextSibling, $$prevSibling, etc) for performance reasons. 
 * $apply and $evalAsync should trigger digests from root. 
 * Isolated Scopes - we create it from a parent, but do not set the parent to its prototype, thus disabling prototypal inheritance. This is handled by passing true to the $new call. 
+* Substitue parent scope - scopes also allow the ability to provide some other scope to be the parent of the new scope, while still maintaining the normal inheritance chain. 
