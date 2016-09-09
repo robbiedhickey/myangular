@@ -222,6 +222,29 @@ describe('Scope', function(){
       scope.$digest();
       expect(scope.counter).toBe(1);
     });
+
+    // handle exceptions
+    it('catches exception in watch functions and continues', function(){
+      scope.aValue = 'abc';
+      scope.counter = 0;
+
+      scope.$watch(
+        function(scope) { throw 'Error'; },
+        function(newValue, oldValue, scope) { }
+      );
+
+      scope.$watch(
+        function(scope) { return scope.aValue; },
+        function(newValue, oldValue, scope) { 
+          return scope.counter++;
+        }
+      );
+
+      scope.$digest();
+      expect(scope.counter).toBe(1);
+    });
+
+    
   });
     
 });

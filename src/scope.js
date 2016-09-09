@@ -38,21 +38,25 @@ Scope.prototype.$$digestOnce = function () {
   var self = this;
   var newValue, oldValue, dirty;
   _.forEach(this.$$watchers, function (watcher) {
-    newValue = watcher.watchFn(self);
-    oldValue = watcher.last;
-    if (!self.$$areEqual(newValue, oldValue, watcher.valueEq)) {
-      self.$$lastDirtyWatch = watcher;
-      // make deep copy if value equality enabled
-      watcher.last = (watcher.valueEq ? _.cloneDeep(newValue) : newValue);
-      watcher.listenerFn(
-        newValue,
-        // don't leak initWatchValue abstraction 
-        oldValue === initWatchVal ? newValue : oldValue,
-        self);
-      dirty = true;
-    } else if (self.$$lastDirtyWatch === watcher) {
-      dirty = false;
-      return false;
+    try {
+      newValue = watcher.watchFn(self);
+      oldValue = watcher.last;
+      if (!self.$$areEqual(newValue, oldValue, watcher.valueEq)) {
+        self.$$lastDirtyWatch = watcher;
+        // make deep copy if value equality enabled
+        watcher.last = (watcher.valueEq ? _.cloneDeep(newValue) : newValue);
+        watcher.listenerFn(
+          newValue,
+          // don't leak initWatchValue abstraction 
+          oldValue === initWatchVal ? newValue : oldValue,
+          self);
+        dirty = true;
+      } else if (self.$$lastDirtyWatch === watcher) {
+        dirty = false;
+        return false;
+      }
+    } catch(e) {
+      console.error(e);
     }
   });
   return dirty;
