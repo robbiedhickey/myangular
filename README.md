@@ -19,3 +19,10 @@ Outline the features covered in each chapter
 * $applyAsync - coalesce many $apply invocations. Rather than happen immediately, they are scheduled to run soon. This also guards you against calling $apply while another digest is running, which will throw an exception. applyAsync in that sense is a safer operation and has the same desired effect. Note that it always defers the invocation. Main goal is optimization, to execute invocations that are scheduled in quick succession in one digest.
 * $$postDigest - schedules a function to run after the next digest completes. Unlike apply, does not schedule a digest.
 * $watchGroup - takes several watch functions and fires listener when any of them change. It should also defer the listener call to a moment when all watches have been checked so we don't run them multiple times.
+
+## Chapter 3 - Scope Inheritance
+
+Relies heavily on Javascript prototypal inheritance with a few added bells and whistles. We will go over both regular and isolated forms of scope. 
+
+* Root Scope - this is effectively what we have been working with to date. A root scope has no parent. 
+* $new - used to make child scopes. A child scope by default shares the properties of its parent's scope. 'inheritance' describe block has a good set of tests describing the behavior we should expect from a child scope. 
