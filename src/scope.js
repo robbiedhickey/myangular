@@ -50,10 +50,10 @@ Scope.prototype.$digest = function () {
 
     // run async tasks in current digest
     while (this.$$asyncQueue.length) {
-      try{
+      try {
         var asyncTask = this.$$asyncQueue.shift();
         asyncTask.scope.$eval(asyncTask.expression);
-      } catch(e){
+      } catch (e) {
         console.error(e);
       }
     }
@@ -67,7 +67,7 @@ Scope.prototype.$digest = function () {
   } while (dirty || this.$$asyncQueue.length);
   this.$clearPhase();
 
-  while(this.$$postDigestQueue.length) {
+  while (this.$$postDigestQueue.length) {
     try {
       this.$$postDigestQueue.shift()();
     } catch (e) {
@@ -181,8 +181,21 @@ Scope.prototype.$clearPhase = function () {
   this.$$phase = null;
 };
 
-Scope.prototype.$$postDigest = function(fn) {
+Scope.prototype.$$postDigest = function (fn) {
   this.$$postDigestQueue.push(fn);
 };
 
-module.exports = Scope;
+Scope.prototype.$watchGroup = function (watchFns, listenerFn) {
+  var self = this;
+  var newValues = new Array(watchFns.length);
+  var oldValues = new Array(watchFns.length);
+  _.forEach(watchFns, function (watchFn, i) {
+    self.$watch(watchFn, function (newValue, oldValue) {
+      newValues[i] = newValue;
+      oldValues[i] = oldValue;
+      listenerFn(newValues, oldValues, self);
+    });
+  });
+};
+
+  module.exports = Scope;

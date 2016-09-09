@@ -18,3 +18,4 @@ Outline the features covered in each chapter
 * Scope Phases - lets angular internals query when a digest is running. '$digest' and '$apply' are two of them, otherwise it will be null.
 * $applyAsync - coalesce many $apply invocations. Rather than happen immediately, they are scheduled to run soon. This also guards you against calling $apply while another digest is running, which will throw an exception. applyAsync in that sense is a safer operation and has the same desired effect. Note that it always defers the invocation. Main goal is optimization, to execute invocations that are scheduled in quick succession in one digest.
 * $$postDigest - schedules a function to run after the next digest completes. Unlike apply, does not schedule a digest.
+* $watchGroup - takes several watch functions and fires listener when any of them change.
