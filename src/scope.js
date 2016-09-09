@@ -39,6 +39,12 @@ Scope.prototype.$digest = function () {
   var dirty;
   this.$$lastDirtyWatch = null;
   this.$beginPhase('$digest');
+
+  if (this.$$applyAsyncId) {
+    clearTimeout(this.$$applyAsyncId);
+    this.$$flushApplyAsync();
+  }
+
   do {
 
     // run async tasks in current digest
@@ -128,22 +134,23 @@ Scope.prototype.$apply = function (expr) {
   }
 };
 
-Scope.prototype.$applyAsync = function(expr) {
+Scope.prototype.$applyAsync = function (expr) {
   var self = this;
-  self.$$applyAsyncQueue.push(function(){
+  self.$$applyAsyncQueue.push(function () {
     self.$eval(expr);
   });
-
-  if(self.$$applyAsyncId === null) {
-    self.$$applyAsyncId = setTimeout(function(){
-      self.$apply(function(){
-        while(self.$$applyAsyncQueue.length){
-          self.$$applyAsyncQueue.shift()();
-        }
-        self.$$applyAsyncId = null;
-      });
+  if (self.$$applyAsyncId === null) {
+    self.$$applyAsyncId = setTimeout(function () {
+      self.$apply(_.bind(self.$$flushApplyAsync, self));
     }, 0);
   }
+};
+
+Scope.prototype.$$flushApplyAsync = function () {
+  while (this.$$applyAsyncQueue.length) {
+    this.$$applyAsyncQueue.shift()();
+  }
+  this.$$applyAsyncId = null;
 };
 
 Scope.prototype.$beginPhase = function (phase) {
