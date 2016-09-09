@@ -1,17 +1,17 @@
 'use strict';
 var _ = require('lodash');
 
-function Scope(){
+function Scope() {
   this.$$watchers = [];
   this.$$lastDirtyWatch = null;
 }
 
 function initWatchVal() { }
 
-Scope.prototype.$watch = function(watchFn, listenerFn, valueEq){
+Scope.prototype.$watch = function (watchFn, listenerFn, valueEq) {
   var watcher = {
     watchFn: watchFn,
-    listenerFn: listenerFn || function() {},
+    listenerFn: listenerFn || function () { },
     valueEq: !!valueEq,
     last: initWatchVal
   };
@@ -19,7 +19,7 @@ Scope.prototype.$watch = function(watchFn, listenerFn, valueEq){
   this.$$lastDirtyWatch = null;
 };
 
-Scope.prototype.$digest = function(){
+Scope.prototype.$digest = function () {
   var ttl = 10;
   var dirty;
   this.$$lastDirtyWatch = null;
@@ -27,29 +27,29 @@ Scope.prototype.$digest = function(){
   do {
     dirty = this.$$digestOnce();
 
-    if(dirty && (ttl-- === 0)){
+    if (dirty && (ttl-- === 0)) {
       throw '10 digest iterations reached. Abandoning digest cycle';
     }
 
-  } while(dirty);
+  } while (dirty);
 };
 
-Scope.prototype.$$digestOnce = function() {
+Scope.prototype.$$digestOnce = function () {
   var self = this;
   var newValue, oldValue, dirty;
-  _.forEach(this.$$watchers, function(watcher){
+  _.forEach(this.$$watchers, function (watcher) {
     newValue = watcher.watchFn(self);
     oldValue = watcher.last;
-    if(!self.$$areEqual(newValue, oldValue, watcher.valueEq)){
+    if (!self.$$areEqual(newValue, oldValue, watcher.valueEq)) {
       self.$$lastDirtyWatch = watcher;
       // make deep copy if value equality enabled
-      watcher.last = ( watcher.valueEq ? _.cloneDeep(newValue) : newValue );
+      watcher.last = (watcher.valueEq ? _.cloneDeep(newValue) : newValue);
       watcher.listenerFn(
-        newValue, 
+        newValue,
         // don't leak initWatchValue abstraction 
-        oldValue === initWatchVal ? newValue : oldValue, 
+        oldValue === initWatchVal ? newValue : oldValue,
         self);
-        dirty = true;
+      dirty = true;
     } else if (self.$$lastDirtyWatch === watcher) {
       dirty = false;
       return false;
@@ -58,9 +58,16 @@ Scope.prototype.$$digestOnce = function() {
   return dirty;
 };
 
-Scope.prototype.$$areEqual = function(newValue, oldValue, valueEq) {
-  if(valueEq){
+Scope.prototype.$$areEqual = function (newValue, oldValue, valueEq) {
+  if (valueEq) {
     return _.isEqual(newValue, oldValue);
+  }
+
+  // NaN is never equal to itself, force equality to end digest
+  if (typeof newValue === 'number' &&
+    typeof oldValue === 'number' &&
+    isNaN(newValue) && isNaN(oldValue)) {
+    return true;
   }
 
   return newValue === oldValue;
