@@ -30,3 +30,4 @@ Relies heavily on Javascript prototypal inheritance with a few added bells and w
 * Separated watches - with current implementation, all watchers are stored on root scope. This means, any time we want to trigger a digest we have to trigger all watchers in the scope hierarchy. 
 * Recursive Digest - we don't want watches to run **up** the hierarchy but we do want them to run **down** the hierarchy. Therefor, scopes need to know what children they have. We will implement this using a $$children array, while angular implements this as a linked list ($$nextSibling, $$prevSibling, etc) for performance reasons. 
 * $apply and $evalAsync should trigger digests from root. 
+* Isolated Scopes - we create it from a parent, but do not set the parent to its prototype, thus disabling prototypal inheritance. This is handled by passing true to the $new call. 
