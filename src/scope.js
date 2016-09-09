@@ -8,10 +8,11 @@ function Scope(){
 
 function initWatchVal() { }
 
-Scope.prototype.$watch = function(watchFn, listenerFn){
+Scope.prototype.$watch = function(watchFn, listenerFn, valueEq){
   var watcher = {
     watchFn: watchFn,
     listenerFn: listenerFn || function() {},
+    valueEq: !!valueEq,
     last: initWatchVal
   };
   this.$$watchers.push(watcher);
@@ -39,9 +40,10 @@ Scope.prototype.$$digestOnce = function() {
   _.forEach(this.$$watchers, function(watcher){
     newValue = watcher.watchFn(self);
     oldValue = watcher.last;
-    if(newValue !== oldValue){
+    if(!self.$$areEqual(newValue, oldValue, watcher.valueEq)){
       self.$$lastDirtyWatch = watcher;
-      watcher.last = newValue;
+      // make deep copy if value equality enabled
+      watcher.last = ( watcher.valueEq ? _.cloneDeep(newValue) : newValue );
       watcher.listenerFn(
         newValue, 
         // don't leak initWatchValue abstraction 
@@ -56,4 +58,11 @@ Scope.prototype.$$digestOnce = function() {
   return dirty;
 };
 
+Scope.prototype.$$areEqual = function(newValue, oldValue, valueEq) {
+  if(valueEq){
+    return _.isEqual(newValue, oldValue);
+  }
+
+  return newValue === oldValue;
+};
 module.exports = Scope;
