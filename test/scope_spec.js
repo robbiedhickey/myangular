@@ -244,7 +244,31 @@ describe('Scope', function(){
       expect(scope.counter).toBe(1);
     });
 
-    
+    // handle removing a watcher
+    it('allows destroying a $watch with a removal function', function(){
+      scope.aValue = 'abc';
+      scope.counter = 0;
+
+      var destroyWatcher = scope.$watch(
+        function(scope) { return scope.aValue; },
+        function(newValue, oldValue, scope){
+          return scope.counter++;
+        }
+      );
+
+      scope.$digest();
+      expect(scope.counter).toBe(1);
+
+      scope.aValue = 'def';
+      scope.$digest();
+      expect(scope.counter).toBe(2);
+
+      scope.aValue = 'ghi';
+      destroyWatcher();
+      scope.$digest();
+      expect(scope.counter).toBe(2);
+
+    })
   });
     
 });
