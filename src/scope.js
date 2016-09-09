@@ -190,9 +190,21 @@ Scope.prototype.$watchGroup = function (watchFns, listenerFn) {
   var newValues = new Array(watchFns.length);
   var oldValues = new Array(watchFns.length);
   var changeReactionScheduled = false;
+  var firstRun = true;
+
+  if(watchFns.length === 0){
+    self.$evalAsync(function(){
+      listenerFn(newValues, newValues, self);
+    });
+  }
 
   function watchGroupListener() {
-    listenerFn(newValues, oldValues, self);
+    if(firstRun){
+      firstRun = false;
+      listenerFn(newValues, newValues, self);
+    } else {
+      listenerFn(newValues, oldValues, self);
+    }
     changeReactionScheduled = false;
   }
 
