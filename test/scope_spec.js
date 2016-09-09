@@ -817,20 +817,20 @@ describe('Scope', function () {
       });
 
       scope.$digest();
-        expect(gotNewValues).toEqual([]);
+      expect(gotNewValues).toEqual([]);
       expect(gotOldValues).toEqual([]);
     });
 
-    it('can be deregistered', function(){
+    it('can be deregistered', function () {
       var counter = 0;
 
       scope.aValue = 1;
       scope.anotherValue = 2;
 
       var destroyGroup = scope.$watchGroup([
-        function(scope) { return scope.aValue; },
-        function(scope) { return scope.anotherValue; }
-      ], function(newValues, oldValues, scope){
+        function (scope) { return scope.aValue; },
+        function (scope) { return scope.anotherValue; }
+      ], function (newValues, oldValues, scope) {
         counter++;
       });
 
@@ -839,6 +839,18 @@ describe('Scope', function () {
       destroyGroup();
       scope.$digest();
       expect(counter).toEqual(1);
+    });
+
+    it('does not call the zero-watch listener when deregistered first', function () {
+      var counter = 0;
+      
+      var destroyGroup = scope.$watchGroup([], function (newValues, oldValues, scope) {
+        counter++;
+      });
+
+      destroyGroup();
+      scope.$digest();
+      expect(counter).toEqual(0);
     });
   });
 });
