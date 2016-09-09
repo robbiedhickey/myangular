@@ -7,6 +7,7 @@ function Scope() {
   this.$$asyncQueue = [];
   this.$$applyAsyncQueue = [];
   this.$$applyAsyncId = null;
+  this.$$postDigestQueue = [];
   this.$$phase = null;
 }
 
@@ -61,6 +62,10 @@ Scope.prototype.$digest = function () {
 
   } while (dirty || this.$$asyncQueue.length);
   this.$clearPhase();
+
+  while(this.$$postDigestQueue.length) {
+    this.$$postDigestQueue.shift()();
+  }
 };
 
 Scope.prototype.$$digestOnce = function () {
@@ -162,6 +167,10 @@ Scope.prototype.$beginPhase = function (phase) {
 
 Scope.prototype.$clearPhase = function () {
   this.$$phase = null;
+};
+
+Scope.prototype.$$postDigest = function(fn) {
+  this.$$postDigestQueue.push(fn);
 };
 
 module.exports = Scope;
