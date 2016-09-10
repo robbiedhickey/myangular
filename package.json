@@ -22,7 +22,8 @@
   },
   "scripts": {
     "lint": "jshint src",
-    "test": "karma start"
+    "test": "karma start",
+    "test:debug": "karma start --browsers=Chrome"
   },
   "author": "",
   "license": "ISC",
