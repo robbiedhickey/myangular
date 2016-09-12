@@ -364,7 +364,11 @@ function isArrayLike(obj) {
   }
 
   var length = obj.length;
-  return _.isNumber(length);
+
+  // check if we have a length, and if it has a key for the last index of the array
+  // meant to distinguish between objects with the a 'length' property
+  return length === 0 ||
+    (_.isNumber(length) && length > 0 && (length - 1) in obj);
 }
 
 module.exports = Scope;
