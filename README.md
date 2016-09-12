@@ -38,3 +38,8 @@ Relies heavily on Javascript prototypal inheritance with a few added bells and w
 
 * Provide an efficent way to watch for groups of changes in objects and arrays. Has the array changed? Have items been added/removed/reordered. We are doing this with value based equality checking but it has to deep watch the entire graph. $watchCollection will be an optimized version of the value-based $watch we already have. We will now effectively have watches that specialize in certain types of data structures.
 * Think of the watchCollection as having two top level conditional branches, for objects and arrays. Non-collection watches should just defer to $watch implementation.
+
+## Chapter 5 - Scope Events
+
+* Pub/sub messaging - scope event system will mimic this pattern. It should also respect scope hierarchy (up or down). When you go up, you are 'emitting' an event. When you go down, you are 'broadcasting' an event. 
+* Registering event listeners - uses the $on method. This method lives on the scope object. Listeners of $on will receive both emitted and broadcasted events. 

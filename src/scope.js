@@ -11,6 +11,7 @@ function Scope() {
   this.$root = this;
   this.$$phase = null;
   this.$$children = [];
+  this.$$listeners = {};
 }
 
 function initWatchVal() { }
@@ -251,6 +252,7 @@ Scope.prototype.$new = function (isolated, parent) {
     child = Object.create(this);
   }
   parent.$$children.push(child);
+  child.$$listeners = {};
   child.$$watchers = [];
   child.$$children = [];
   child.$parent = parent;
@@ -383,4 +385,13 @@ function isArrayLike(obj) {
     (_.isNumber(length) && length > 0 && (length - 1) in obj);
 }
 
+Scope.prototype.$on = function(eventName, listener){
+  var listeners = this.$$listeners[eventName];
+
+  if(!listeners){
+    this.$$listeners[eventName] = listeners = [];
+  } 
+
+  listeners.push(listener);
+};
 module.exports = Scope;
