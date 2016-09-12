@@ -267,47 +267,48 @@ Scope.prototype.$$everyScope = function (fn) {
   }
 };
 
-Scope.prototype.$destroy = function(){
-  if(this.$parent){
+Scope.prototype.$destroy = function () {
+  if (this.$parent) {
     var siblings = this.$parent.$$children;
     var indexOfThis = siblings.indexOf(this);
-    if(indexOfThis >= 0){
+    if (indexOfThis >= 0) {
       siblings.splice(indexOfThis, 1);
     }
-  } 
+  }
 
   this.$$watchers = null;
 };
 
-Scope.prototype.$watchCollection = function(watchFn, listenerFn){
+Scope.prototype.$watchCollection = function (watchFn, listenerFn) {
   var self = this;
   var newValue;
   var oldValue;
   var changeCount = 0;
 
-  var internalWatchFn = function(scope) {
+  var internalWatchFn = function (scope) {
     newValue = watchFn(scope);
-
-    if(_.isObject(newValue)){
-      if(_.isArray(newValue)){
-        if(!_.isArray(oldValue)){
+    if (_.isObject(newValue)) {
+      if (_.isArray(newValue)) {
+        if (!_.isArray(oldValue)) {
           changeCount++;
           oldValue = [];
         }
+        if (newValue.length !== oldValue.length) {
+          changeCount++;
+          oldValue.length = newValue.length;
+        }
       } else {
-
       }
     } else {
-      if(!self.$$areEqual(newValue, oldValue, false)){
+      if (!self.$$areEqual(newValue, oldValue, false)) {
         changeCount++;
       }
       oldValue = newValue;
     }
-
     return changeCount;
   };
 
-  var internalListenerFn = function(){
+  var internalListenerFn = function () {
     listenerFn(newValue, oldValue, self);
   };
 
