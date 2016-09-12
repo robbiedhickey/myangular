@@ -37,4 +37,4 @@ Relies heavily on Javascript prototypal inheritance with a few added bells and w
 ## Chapter 4 - Watch Collections
 
 * Provide an efficent way to watch for groups of changes in objects and arrays. Has the array changed? Have items been added/removed/reordered. We are doing this with value based equality checking but it has to deep watch the entire graph. $watchCollection will be an optimized version of the value-based $watch we already have. We will now effectively have watches that specialize in certain types of data structures.
-
+* Think of the watchCollection as having two top level conditional branches, for objects and arrays. Non-collection watches should just defer to $watch implementation.
