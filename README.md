@@ -33,3 +33,8 @@ Relies heavily on Javascript prototypal inheritance with a few added bells and w
 * Isolated Scopes - we create it from a parent, but do not set the parent to its prototype, thus disabling prototypal inheritance. This is handled by passing true to the $new call. 
 * Substitue parent scope - scopes also allow the ability to provide some other scope to be the parent of the new scope, while still maintaining the normal inheritance chain. 
 * Destroying scope - means that all of its watchers are removed and that the scope itself is remove from the $$children of its parent.
+
+## Chapter 4 - Watch Collections
+
+* Provide an efficent way to watch for groups of changes in objects and arrays. Has the array changed? Have items been added/removed/reordered. We are doing this with value based equality checking but it has to deep watch the entire graph. $watchCollection will be an optimized version of the value-based $watch we already have. We will now effectively have watches that specialize in certain types of data structures.
+
