@@ -804,7 +804,17 @@
   "vim.useSystemClipboard": false,
 
   // Keybinding overrides to use for insert mode.
-  "vim.insertModeKeyBindings": [],
+  "vim.insertModeKeyBindings": [
+    {
+        "before": [
+            "j",
+            "j"
+        ],
+        "after": [
+            "<Esc>"
+        ]
+    } 
+  ],
 
   // Non-recursive keybinding overrides to use for insert mode.
   "vim.insertModeKeyBindingsNonRecursive": [],

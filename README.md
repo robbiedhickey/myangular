@@ -32,3 +32,4 @@ Relies heavily on Javascript prototypal inheritance with a few added bells and w
 * $apply and $evalAsync should trigger digests from root. 
 * Isolated Scopes - we create it from a parent, but do not set the parent to its prototype, thus disabling prototypal inheritance. This is handled by passing true to the $new call. 
 * Substitue parent scope - scopes also allow the ability to provide some other scope to be the parent of the new scope, while still maintaining the normal inheritance chain. 
+* Destroying scope - means that all of its watchers are removed and that the scope itself is remove from the $$children of its parent.
