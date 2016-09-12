@@ -297,14 +297,18 @@ Scope.prototype.$watchCollection = function (watchFn, listenerFn) {
           changeCount++;
           oldValue.length = newValue.length;
         }
-        _.forEach(newValue, function(newItem, i){
+        _.forEach(newValue, function (newItem, i) {
           var bothNaN = _.isNaN(newItem) && _.isNaN(oldValue[i]);
-          if(!bothNaN && newItem !== oldValue[i]) {
+          if (!bothNaN && newItem !== oldValue[i]) {
             changeCount++;
             oldValue[i] = newItem;
           }
         });
       } else {
+        if (!_.isObject(oldValue) || isArrayLike(oldValue)) {
+          changeCount++;
+          oldValue = {};
+        }
       }
     } else {
       if (!self.$$areEqual(newValue, oldValue, false)) {
@@ -322,8 +326,8 @@ Scope.prototype.$watchCollection = function (watchFn, listenerFn) {
   return this.$watch(internalWatchFn, internalListenerFn);
 };
 
-function isArrayLike(obj){
-  if(_.isNull(obj) || _.isUndefined(obj)){
+function isArrayLike(obj) {
+  if (_.isNull(obj) || _.isUndefined(obj)) {
     return false;
   }
 
