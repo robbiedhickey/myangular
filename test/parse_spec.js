@@ -96,4 +96,9 @@ describe('parse', function () {
         var fn = parse('false');
         expect(fn()).toBe(false);  
     });
+
+    it('ignores whitespace', function(){
+        var fn = parse('\n42');
+        expect(fn()).toEqual(42);  
+    });
 });

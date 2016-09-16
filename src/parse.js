@@ -33,6 +33,8 @@ Lexer.prototype.lex = function (text) {
             this.readString(this.ch);
         } else if (this.isIdentifier(this.ch)) {
             this.readIdentifier();
+        } else if (this.isWhitespace(this.ch)){
+            this.index++;
         } else {
             throw 'Unexpected next character: ' + this.ch;
         }
@@ -148,6 +150,11 @@ Lexer.prototype.readIdentifier = function () {
     var token = { text: text };
 
     this.tokens.push(token);
+};
+
+Lexer.prototype.isWhitespace = function(ch) {
+    return ch === ' ' || ch === '\r' || ch === '\t' || 
+        ch === '\n' || ch === '\v' || ch === '\u00A0';   
 };
 
 function AST(lexer) {
