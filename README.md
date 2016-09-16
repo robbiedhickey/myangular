@@ -62,4 +62,4 @@ This is problematic though, the use of both `with` and `eval` is frowned upon. T
 
 Because of this, we will implement our own parser, lexer and AST to handle expression compilation. In the process, we will skip some nicesseties for simplicity sake. Namely, error messages will not be detailed when parsing goes wrong, and we will only implement compiled mode of HTML Content Security Policy and not interpreted mode. 
 
-![angularjs expression cheatsheet](expression-cheatsheet.js)
+![angularjs expression cheatsheet](expression-cheatsheet.jpg)
