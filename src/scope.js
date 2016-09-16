@@ -320,12 +320,12 @@ Scope.prototype.$watchCollection = function (watchFn, listenerFn) {
         newLength = 0;
 
         // have attributes been added/changed
-        _.forOwn(newValue, function(newVal, key){
+        _.forOwn(newValue, function (newVal, key) {
           newLength++;
 
-          if(oldValue.hasOwnProperty(key)){
+          if (oldValue.hasOwnProperty(key)) {
             var bothNaN = _.isNaN(newVal) && _.isNaN(oldValue[key]);
-            if(!bothNaN && oldValue[key] !== newVal){
+            if (!bothNaN && oldValue[key] !== newVal) {
               changeCount++;
               oldValue[key] = newVal;
             }
@@ -337,10 +337,10 @@ Scope.prototype.$watchCollection = function (watchFn, listenerFn) {
         });
 
         // have attributes been removed
-        if(oldLength > newLength){
+        if (oldLength > newLength) {
           changeCount++;
-          _.forOwn(oldValue, function(oldVal, key){
-            if(!newValue.hasOwnProperty(key)){
+          _.forOwn(oldValue, function (oldVal, key) {
+            if (!newValue.hasOwnProperty(key)) {
               oldLength--;
               delete oldValue[key];
             }
@@ -357,14 +357,14 @@ Scope.prototype.$watchCollection = function (watchFn, listenerFn) {
   };
 
   var internalListenerFn = function () {
-    if(firstRun){
+    if (firstRun) {
       listenerFn(newValue, newValue, self);
       firstRun = false;
     } else {
       listenerFn(newValue, veryOldValue, self);
     }
 
-    if(trackVeryOldValue){
+    if (trackVeryOldValue) {
       veryOldValue = _.clone(newValue);
     }
   };
@@ -385,48 +385,52 @@ function isArrayLike(obj) {
     (_.isNumber(length) && length > 0 && (length - 1) in obj);
 }
 
-Scope.prototype.$on = function(eventName, listener){
+Scope.prototype.$on = function (eventName, listener) {
   var listeners = this.$$listeners[eventName];
 
-  if(!listeners){
+  if (!listeners) {
     this.$$listeners[eventName] = listeners = [];
-  } 
+  }
 
   listeners.push(listener);
 
-  return function() {
+  return function () {
     var index = listeners.indexOf(listener);
-    if(index >= 0) {
+    if (index >= 0) {
       listeners[index] = null;
     }
   };
 };
 
-Scope.prototype.$emit = function(eventName) {
-  var additionalArgs = _.tail(arguments);
-  return this.$$fireEventOnScope(eventName, additionalArgs);
-};
-
-Scope.prototype.$broadcast = function(eventName) {
-  var additionalArgs = _.tail(arguments);
-  return this.$$fireEventOnScope(eventName, additionalArgs);
-};
-
-Scope.prototype.$$fireEventOnScope = function(eventName, additionalArgs) {
+Scope.prototype.$emit = function (eventName) {
   var event = { name: eventName };
-  var listenerArgs = [event].concat(additionalArgs);
+  var listenerArgs = [event].concat(_.tail(arguments));
+  var scope = this;
+  do {
+    scope.$$fireEventOnScope(eventName, listenerArgs);
+    scope = scope.$parent;
+  } while (scope);
+  return event;
+};
+
+Scope.prototype.$broadcast = function (eventName) {
+  var event = { name: eventName };
+  var listenerArgs = [event].concat(_.tail(arguments));
+  this.$$fireEventOnScope(eventName, listenerArgs);
+  return event;
+};
+
+Scope.prototype.$$fireEventOnScope = function (eventName, listenerArgs) {
   var listeners = this.$$listeners[eventName] || [];
   var i = 0;
-
-  while(i < listeners.length) {
-    if(listeners[i] === null){
-      listeners.splice(i,1);
+  while (i < listeners.length) {
+    if (listeners[i] === null) {
+      listeners.splice(i, 1);
     } else {
       listeners[i].apply(null, listenerArgs);
       i++;
     }
   }
-  return event;
 };
 
 module.exports = Scope;
