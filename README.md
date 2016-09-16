@@ -43,3 +43,23 @@ Relies heavily on Javascript prototypal inheritance with a few added bells and w
 
 * Pub/sub messaging - scope event system will mimic this pattern. It should also respect scope hierarchy (up or down). When you go up, you are 'emitting' an event. When you go down, you are 'broadcasting' an event. 
 * Registering event listeners - uses the $on method. This method lives on the scope object. Listeners of $on will receive both emitted and broadcasted events. 
+
+## Chapter 6 - Literal expressions
+
+Much of the angular expression system can be implemented in a few lines of javascript:
+
+```javascript
+function parse(expr) {
+    return function(scope) {
+        with (scope) {
+            return eval(expr);
+        }
+    }
+}
+```
+
+This is problematic though, the use of both `with` and `eval` is frowned upon. This also doesn't support filters, which use the `|` character, which `eval` will interpret as a bitwise OR operator.
+
+Because of this, we will implement our own parser, lexer and AST to handle expression compilation. In the process, we will skip some nicesseties for simplicity sake. Namely, error messages will not be detailed when parsing goes wrong, and we will only implement compiled mode of HTML Content Security Policy and not interpreted mode. 
+
+![angularjs expression cheatsheet](expression-cheatsheet.js)
