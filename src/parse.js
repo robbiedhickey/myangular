@@ -31,6 +31,11 @@ Lexer.prototype.lex = function (text) {
         }
         else if (this.ch === '\'' || this.ch === '"') {
             this.readString(this.ch);
+        } else if (this.ch === '[' || this.ch === ']' || this.ch === ',') {
+            this.tokens.push({
+                text: this.ch
+            });
+            this.index++;
         } else if (this.isIdentifier(this.ch)) {
             this.readIdentifier();
         } else if (this.isWhitespace(this.ch)){
@@ -163,6 +168,7 @@ function AST(lexer) {
 
 AST.Program = 'Program';
 AST.Literal = 'Literal';
+AST.ArrayExpression = 'ArrayExpression';
 
 AST.prototype.ast = function (text) {
     this.tokens = this.lexer.lex(text);
@@ -177,17 +183,59 @@ AST.prototype.program = function () {
 };
 
 AST.prototype.primary = function(){
-    if(this.constants.hasOwnProperty(this.tokens[0].text)) {
-        return this.constants[this.tokens[0].text];
+    if(this.expect('[')){
+        return this.arrayDeclaration();
+    } else if(this.constants.hasOwnProperty(this.tokens[0].text)) {
+        return this.constants[this.consume().text];
     } else {
         return this.constant();
+    }
+};
+
+AST.prototype.expect = function(e) {
+    var token = this.peek(e);
+    if(token){
+        return this.tokens.shift();
+    }
+};
+
+AST.prototype.consume = function(e) {
+    var token = this.expect(e);
+    if(!token) {
+        throw 'Unexpected. Expecting: ' + e;
+    }   
+    return token;
+};
+
+AST.prototype.arrayDeclaration = function() {
+    var elements = [];
+
+    if(!this.peek(']')){
+        do {
+            if(this.peek(']')){
+                break;
+            }
+            elements.push(this.primary());
+        } while(this.expect(','));
+    }
+
+    this.consume(']');   
+    return { type: AST.ArrayExpression, elements: elements };
+};
+
+AST.prototype.peek = function(e) {
+    if(this.tokens.length > 0) {
+        var text = this.tokens[0].text;
+        if(text === e || !e){
+            return this.tokens[0];
+        }
     }
 };
 
 AST.prototype.constant = function () {
     return {
         type: AST.Literal,
-        value: this.tokens[0].value
+        value: this.consume().value
     };
 };
 
@@ -216,6 +264,11 @@ ASTCompiler.prototype.recurse = function (ast) {
             return this.state.body.push('return ', this.recurse(ast.body), ';');
         case AST.Literal:
             return this.escape(ast.value);
+        case AST.ArrayExpression:
+            var elements = _.map(ast.elements, _.bind(function(element){
+                return this.recurse(element);
+            }, this))
+            return '[' + elements.join(',') + ']';
     }
 };
 
