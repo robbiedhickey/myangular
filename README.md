@@ -91,3 +91,13 @@ function(scope){
 }
 ```
 * The Parser is responsible for combining the low-level steps mentioned above. It doesn't do very much itself, but delegates heavy lifting to the other components. 
+
+### Takeaways
+
+* That the expression parser runs internally in three phases: Lexing, AST building, and AST compilation.
+• That the end result of the parsing process is a generated JavaScript function.
+• How the parser deals with integers, floating point numbers, and scientific notation.
+• How the parser deals with strings.
+• How the parser deals with literal booleans and null.
+• How the parser deals with whitespace - by ignoring it.
+• How the parser deals with arrays and objects, and how it recursively parses their contents
