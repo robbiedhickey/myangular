@@ -101,3 +101,9 @@ function(scope){
 • How the parser deals with literal booleans and null.
 • How the parser deals with whitespace - by ignoring it.
 • How the parser deals with arrays and objects, and how it recursively parses their contents
+
+## Chapter 7 - Lookup and Function Call Expressions
+
+Our expression parser can interpret literals but isn't yet very useful. Angular expressions in the view are typically used to either access data on the scope or manipulate data on the scope. In this chapter we will add those capabilities. We will also implement security measures to prevent dangerous expressions from getting through.
+
+* Simple attribute lookup

@@ -126,4 +126,15 @@ describe('parse', function () {
         var fn = parse('{"a key": 1, \'another-key\': 2}');
         expect(fn()).toEqual({ 'a key': 1, 'another-key': 2 });
     });
+
+    it('looks up an attribute from the scope', function () {
+        var fn = parse('aKey');
+        expect(fn({ aKey: 42 })).toBe(42);
+        expect(fn({})).toBeUndefined();
+    });
+
+    it('returns undefined when lookup up an attribute from undefined', function(){
+        var fn = parse('aKey');
+        expect(fn()).toBeUndefined();
+    });
 });
